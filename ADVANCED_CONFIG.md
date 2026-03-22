@@ -1,4 +1,4 @@
-# Configuration Avancée - Nosarial Plugins
+# Configuration Avancée - Nosiaral Plugins
 
 ## 🎯 Cas d'Usage Courants
 
@@ -6,13 +6,13 @@
 
 **index.html** - Ligne 6:
 ```html
-<title>Nosarial Plugins - Plugins Minecraft</title>
+<title>Nosiaral Plugins - Plugins Minecraft</title>
 ```
 
 **index.html** - Dans le header:
 ```html
-<h1 class="header-title">Nosarial Plugins</h1>
-<p class="header-subtitle">Plugins Minecraft pour les vidéos de Nosarial</p>
+<h1 class="header-title">Nosiaral Plugins</h1>
+<p class="header-subtitle">Plugins Minecraft pour les vidéos de Nosiaral</p>
 ```
 
 ### Ajouter un bouton Discord / YouTUBE
@@ -95,7 +95,7 @@ Dans **index.html**, après la grille des plugins:
 ```html
 <section class="about-section">
     <h2>À propos</h2>
-    <p>Bienvenue sur le site officiel des plugins Minecraft pour les vidéos de Nosarial. 
+    <p>Bienvenue sur le site officiel des plugins Minecraft pour les vidéos de Nosiaral. 
     Tous les plugins sont testés et optimisés pour garantir la meilleure expérience.</p>
 </section>
 ```

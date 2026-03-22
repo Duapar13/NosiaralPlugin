@@ -1,6 +1,6 @@
-# Nosarial Plugins
+# Nosiaral Plugins
 
-Un site web moderne et épuré pour présenter les plugins Minecraft créés pour les vidéos de Nosarial.
+Un site web moderne et épuré pour présenter les plugins Minecraft créés pour les vidéos de Nosiaral.
 
 ## Caractéristiques
 
@@ -79,7 +79,7 @@ Pour remplacer les images placeholder:
 
 ## Licence
 
-Tous droits réservés - Nosarial
+Tous droits réservés - Nosiaral
 
 ## Support
 

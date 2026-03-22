@@ -1,4 +1,4 @@
-# 📝 Guide de Configuration - Nosarial Plugins
+# 📝 Guide de Configuration - Nosiaral Plugins
 
 ## Structure du Projet
 

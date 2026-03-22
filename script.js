@@ -21,7 +21,7 @@ const pluginsData = {
             "/time resume - Reprend le temps",
             "/time status - Affiche la vitesse actuelle"
         ],
-        downloadUrl: "plugins/AccelerateurTemps.jar"
+        downloadUrl: "plugins/NosiaralTime-1.0.0.jar"
     }
 };
 
