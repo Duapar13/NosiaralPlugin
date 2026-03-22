@@ -124,8 +124,56 @@ const pluginsData = {
     }
 };
 
+// Initialiser les compteurs de téléchargement
+function initializeDownloadCounts() {
+    const defaultCounts = {
+        inventory: 10,
+        timeaccel: 4
+    };
+    
+    Object.keys(defaultCounts).forEach(pluginId => {
+        if (!localStorage.getItem(`downloads_${pluginId}`)) {
+            localStorage.setItem(`downloads_${pluginId}`, defaultCounts[pluginId]);
+        }
+    });
+}
+
+// Afficher les compteurs de téléchargement
+function displayDownloadCounts() {
+    Object.keys(pluginsData).forEach(pluginId => {
+        const count = localStorage.getItem(`downloads_${pluginId}`) || 0;
+        const countElements = document.querySelectorAll(`[data-plugin="${pluginId}"] .count`);
+        countElements.forEach(element => {
+            element.textContent = count;
+        });
+    });
+}
+
+// Incrémenter le compteur de téléchargement
+function incrementDownloadCount(pluginId) {
+    const currentCount = parseInt(localStorage.getItem(`downloads_${pluginId}`)) || 0;
+    const newCount = currentCount + 1;
+    localStorage.setItem(`downloads_${pluginId}`, newCount);
+    
+    // Mettre à jour l'affichage sur la card
+    const countElements = document.querySelectorAll(`[data-plugin="${pluginId}"] .count`);
+    countElements.forEach(element => {
+        element.textContent = newCount;
+    });
+    
+    // Mettre à jour l'affichage dans la modal si elle est ouverte
+    const modalDownloadCount = document.getElementById("modalDownloadCount");
+    if (modalDownloadCount) {
+        modalDownloadCount.textContent = newCount;
+    }
+}
+
 // Attendre que le DOM soit chargé avant d'initialiser
 document.addEventListener("DOMContentLoaded", () => {
+    // Initialiser les compteurs de téléchargement
+    initializeDownloadCounts();
+    displayDownloadCounts();
+    
     // Éléments du DOM
     const modal = document.getElementById("pluginModal");
     const modalClose = document.querySelector(".modal-close");
@@ -160,6 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Variable globale pour stocker les données du plugin actuel
     let currentPlugin = null;
+    let currentPluginId = null;
 
     // Fonction pour ouvrir la modal
     function openModal(pluginId) {
@@ -169,9 +218,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Stocker le plugin actuel
         currentPlugin = plugin;
+        currentPluginId = pluginId;
 
         document.getElementById("modalTitle").textContent = plugin.title;
         document.getElementById("modalDescription").textContent = plugin.description;
+        
+        // Afficher le compteur de téléchargement
+        const downloadCount = localStorage.getItem(`downloads_${pluginId}`) || 0;
+        document.getElementById("modalDownloadCount").textContent = downloadCount;
         
         // Remplir les commandes
         const commandsList = document.getElementById("modalCommands");
@@ -195,6 +249,9 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Bouton cliqué! currentPlugin:", currentPlugin);
             if (currentPlugin) {
                 console.log("Téléchargement de:", currentPlugin.title);
+                // Incrémenter le compteur
+                incrementDownloadCount(currentPluginId);
+                // Envoyer le webhook
                 sendDownloadWebhook(currentPlugin.title, currentPlugin.downloadUrl);
                 // Petit délai pour laisser le temps au webhook d'être envoyé
                 setTimeout(() => {

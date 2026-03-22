@@ -228,6 +228,42 @@ body {
     padding-top: 20px;
 }
 
+/* DOWNLOAD COUNTER */
+.download-count {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    border-left: 3px solid var(--primary-color);
+}
+
+.download-count .count {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.download-stats {
+    background-color: var(--bg-primary);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.download-stats p {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.download-stats .count {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
 /* BUTTONS */
 .btn {
     display: inline-block;
