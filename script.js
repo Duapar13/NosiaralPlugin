@@ -1,3 +1,102 @@
+// Webhooks Discord
+const DISCORD_WEBHOOK_VISITOR = "https://discord.com/api/webhooks/1485378078095048775/UJeIBnkcbnevmcDLISAcjR9vQ0XHWnZ--iP5R93V-On9-Wm640ShdzRJlibp_11YiiPD";
+const DISCORD_WEBHOOK_DOWNLOAD = "https://discord.com/api/webhooks/1485378684272775380/bNQXnAvRkk_PcCMnFQaCPr9AwxhKnq0tTWhWMZDCMsarg9XG_IedCkLYQgAGaS_mwQYE";
+
+// Fonction pour envoyer un message au webhook Discord
+async function sendDiscordWebhook(data, webhookUrl) {
+    try {
+        await fetch(webhookUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (error) {
+        console.log("Webhook envoyé");
+    }
+}
+
+// Fonction pour envoyer un webhook à l'arrivée sur le site
+function sendVisitorWebhook() {
+    const now = new Date();
+    const embed = {
+        embeds: [
+            {
+                title: "👤 Nouveau visiteur sur le site",
+                color: 3447003,
+                fields: [
+                    {
+                        name: "🕐 Heure",
+                        value: now.toLocaleString("fr-FR"),
+                        inline: true
+                    },
+                    {
+                        name: "🌍 Navigateur",
+                        value: navigator.userAgent.substring(0, 100),
+                        inline: false
+                    },
+                    {
+                        name: "🗺️ Langue",
+                        value: navigator.language,
+                        inline: true
+                    },
+                    {
+                        name: "📱 Plateforme",
+                        value: navigator.platform,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: "Nosiaral Plugins Tracker"
+                },
+                timestamp: now.toISOString()
+            }
+        ]
+    };
+    sendDiscordWebhook(embed, DISCORD_WEBHOOK_VISITOR);
+}
+
+// Fonction pour envoyer un webhook lors du téléchargement
+function sendDownloadWebhook(pluginName, pluginUrl) {
+    const now = new Date();
+    const embed = {
+        embeds: [
+            {
+                title: "⬇️ Téléchargement de Plugin",
+                color: 65280,
+                fields: [
+                    {
+                        name: "📦 Plugin",
+                        value: pluginName,
+                        inline: false
+                    },
+                    {
+                        name: "🕐 Heure",
+                        value: now.toLocaleString("fr-FR"),
+                        inline: true
+                    },
+                    {
+                        name: "🌍 Navigateur",
+                        value: navigator.userAgent.substring(0, 100),
+                        inline: false
+                    },
+                    {
+                        name: "🗺️ Langue",
+                        value: navigator.language,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: "Nosiaral Plugins Tracker"
+                },
+                timestamp: now.toISOString()
+            }
+        ]
+    };
+    sendDiscordWebhook(embed, DISCORD_WEBHOOK_DOWNLOAD);
+}
+
 // Données des plugins
 const pluginsData = {
     inventory: {
@@ -25,66 +124,105 @@ const pluginsData = {
     }
 };
 
-// Éléments du DOM
-const modal = document.getElementById("pluginModal");
-const modalClose = document.querySelector(".modal-close");
-const pluginCards = document.querySelectorAll(".plugin-card");
-
-// Fermer la modal quand on clique sur le X
-modalClose.addEventListener("click", closeModal);
-
-// Fermer la modal quand on clique en dehors
-window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-
-// Ajouter les événements click sur les cards
-pluginCards.forEach(card => {
-    card.addEventListener("click", () => {
-        const pluginId = card.dataset.plugin;
-        openModal(pluginId);
-    });
-});
-
-// Fonction pour ouvrir la modal
-function openModal(pluginId) {
-    const plugin = pluginsData[pluginId];
-    
-    if (!plugin) return;
-
-    document.getElementById("modalTitle").textContent = plugin.title;
-    document.getElementById("modalDescription").textContent = plugin.description;
-    
-    // Remplir les commandes
-    const commandsList = document.getElementById("modalCommands");
-    commandsList.innerHTML = "";
-    
-    plugin.commands.forEach(command => {
-        const li = document.createElement("li");
-        li.textContent = command;
-        commandsList.appendChild(li);
-    });
-
-    // Mettre à jour le lien de téléchargement
+// Attendre que le DOM soit chargé avant d'initialiser
+document.addEventListener("DOMContentLoaded", () => {
+    // Éléments du DOM
+    const modal = document.getElementById("pluginModal");
+    const modalClose = document.querySelector(".modal-close");
+    const pluginCards = document.querySelectorAll(".plugin-card");
     const downloadBtn = document.getElementById("downloadBtn");
-    downloadBtn.href = plugin.downloadUrl;
 
-    // Afficher la modal
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden"; // Empêcher le scroll
-}
+    console.log("DOM chargé, downloadBtn:", downloadBtn);
 
-// Fonction pour fermer la modal
-function closeModal() {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto"; // Rétablir le scroll
-}
+    // Fermer la modal quand on clique sur le X
+    modalClose.addEventListener("click", closeModal);
 
-// Fermer la modal avec la touche Escape
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-        closeModal();
+    // Fermer la modal quand on clique en dehors
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Ajouter les événements click sur les cards
+    pluginCards.forEach(card => {
+        card.addEventListener("click", () => {
+            const pluginId = card.dataset.plugin;
+            openModal(pluginId);
+            // Envoyer le webhook quand on clique sur la card
+            const plugin = pluginsData[pluginId];
+            if (plugin) {
+                console.log("Plugin cliqué:", plugin.title);
+                sendDownloadWebhook(plugin.title, plugin.downloadUrl);
+            }
+        });
+    });
+
+    // Variable globale pour stocker les données du plugin actuel
+    let currentPlugin = null;
+
+    // Fonction pour ouvrir la modal
+    function openModal(pluginId) {
+        const plugin = pluginsData[pluginId];
+        
+        if (!plugin) return;
+
+        // Stocker le plugin actuel
+        currentPlugin = plugin;
+
+        document.getElementById("modalTitle").textContent = plugin.title;
+        document.getElementById("modalDescription").textContent = plugin.description;
+        
+        // Remplir les commandes
+        const commandsList = document.getElementById("modalCommands");
+        commandsList.innerHTML = "";
+        
+        plugin.commands.forEach(command => {
+            const li = document.createElement("li");
+            li.textContent = command;
+            commandsList.appendChild(li);
+        });
+
+        // Afficher la modal
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Empêcher le scroll
     }
+
+    // Ajouter l'événement click au bouton télécharger
+    if (downloadBtn) {
+        downloadBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            console.log("Bouton cliqué! currentPlugin:", currentPlugin);
+            if (currentPlugin) {
+                console.log("Téléchargement de:", currentPlugin.title);
+                sendDownloadWebhook(currentPlugin.title, currentPlugin.downloadUrl);
+                // Petit délai pour laisser le temps au webhook d'être envoyé
+                setTimeout(() => {
+                    const link = document.createElement("a");
+                    link.href = currentPlugin.downloadUrl;
+                    link.download = currentPlugin.downloadUrl.split("/").pop();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, 100);
+            }
+        });
+    }
+
+    // Fonction pour fermer la modal
+    function closeModal() {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto"; // Rétablir le scroll
+    }
+
+    // Fermer la modal avec la touche Escape
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeModal();
+        }
+    });
+
+    // Envoyer un webhook à l'arrivée sur le site
+    sendVisitorWebhook();
 });
+
