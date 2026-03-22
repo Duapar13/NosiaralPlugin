@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosarial Plugins - Plugins Minecraft</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="header-title">Nosarial Plugins</h1>
+            <p class="header-subtitle">Plugins Minecraft pour les vidéos de Nosarial</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="plugins-grid">
+            <div class="plugin-card" data-plugin="inventory">
+                <div class="plugin-image">
+                    <img src="images/2.jpg" alt="Plugin Inventaire">
+                </div>
+                <div class="plugin-info">
+                    <h3>6 GARS en Hardcore avec INVENTAIRE et PV PARTAGÉS</h3>
+                    <p>Synchronise l'inventaire et la vie entre tous les joueurs</p>
+                </div>
+            </div>
+
+            <div class="plugin-card" data-plugin="timeaccel">
+                <div class="plugin-image">
+                    <img src="images/1.jpg" alt="Accélérateur de Temps">
+                </div>
+                <div class="plugin-info">
+                    <h3>J'ACCELERE LE JEU mais IL NE PEUT PAS LE PROUVER</h3>
+                    <p>Accélère le temps du jeu selon vos besoins</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Popup -->
+    <div class="modal" id="pluginModal">
+        <div class="modal-content">
+            <span class="modal-close">×</span>
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+            </div>
+            <div class="modal-body">
+                <p id="modalDescription"></p>
+                <div class="commands-section">
+                    <h3>Commandes</h3>
+                    <ul id="modalCommands" class="commands-list"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" id="downloadBtn">📥 Télécharger</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Plugins développés par <strong>Duapar</strong> | Hébergé sur GitHub Pages</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
