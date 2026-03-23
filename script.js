@@ -127,8 +127,8 @@ const pluginsData = {
 // Initialiser les compteurs de téléchargement
 function initializeDownloadCounts() {
     const defaultCounts = {
-        inventory: 10,
-        timeaccel: 4
+        inventory: 58,
+        timeaccel: 38
     };
     
     Object.keys(defaultCounts).forEach(pluginId => {
