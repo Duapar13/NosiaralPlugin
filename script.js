@@ -108,7 +108,8 @@ const pluginsData = {
             "/sharedhealth sethealth - Définit la vie partagée entre les joueurs",
             "/sharedhealth bigdamage - Active le mode dégâts importants"
         ],
-        downloadUrl: "plugins/SharedHealth-1.0.0.jar"
+        downloadUrl: "plugins/SharedHealth-1.0.0.jar",
+        downloads: 58
     },
     timeaccel: {
         title: "J'ACCELERE LE JEU mais IL NE PEUT PAS LE PROUVER",
@@ -120,28 +121,15 @@ const pluginsData = {
             "/time resume - Reprend le temps",
             "/time status - Affiche la vitesse actuelle"
         ],
-        downloadUrl: "plugins/NosiaralTime-1.0.0.jar"
+        downloadUrl: "plugins/NosiaralTime-1.0.0.jar",
+        downloads: 38
     }
 };
-
-// Initialiser les compteurs de téléchargement
-function initializeDownloadCounts() {
-    const defaultCounts = {
-        inventory: 58,
-        timeaccel: 38
-    };
-    
-    Object.keys(defaultCounts).forEach(pluginId => {
-        if (!localStorage.getItem(`downloads_${pluginId}`)) {
-            localStorage.setItem(`downloads_${pluginId}`, defaultCounts[pluginId]);
-        }
-    });
-}
 
 // Afficher les compteurs de téléchargement
 function displayDownloadCounts() {
     Object.keys(pluginsData).forEach(pluginId => {
-        const count = localStorage.getItem(`downloads_${pluginId}`) || 0;
+        const count = pluginsData[pluginId].downloads;
         const countElements = document.querySelectorAll(`[data-plugin="${pluginId}"] .count`);
         countElements.forEach(element => {
             element.textContent = count;
@@ -151,9 +139,7 @@ function displayDownloadCounts() {
 
 // Incrémenter le compteur de téléchargement
 function incrementDownloadCount(pluginId) {
-    const currentCount = parseInt(localStorage.getItem(`downloads_${pluginId}`)) || 0;
-    const newCount = currentCount + 1;
-    localStorage.setItem(`downloads_${pluginId}`, newCount);
+    const newCount = ++pluginsData[pluginId].downloads;
     
     // Mettre à jour l'affichage sur la card
     const countElements = document.querySelectorAll(`[data-plugin="${pluginId}"] .count`);
@@ -170,8 +156,8 @@ function incrementDownloadCount(pluginId) {
 
 // Attendre que le DOM soit chargé avant d'initialiser
 document.addEventListener("DOMContentLoaded", () => {
-    // Initialiser les compteurs de téléchargement
-    initializeDownloadCounts();
+    // Afficher les compteurs de téléchargement
+    displayDownloadCounts();
     displayDownloadCounts();
     
     // Éléments du DOM
@@ -224,8 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("modalDescription").textContent = plugin.description;
         
         // Afficher le compteur de téléchargement
-        const downloadCount = localStorage.getItem(`downloads_${pluginId}`) || 0;
-        document.getElementById("modalDownloadCount").textContent = downloadCount;
+        document.getElementById("modalDownloadCount").textContent = plugin.downloads;
         
         // Remplir les commandes
         const commandsList = document.getElementById("modalCommands");
