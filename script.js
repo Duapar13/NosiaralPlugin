@@ -109,7 +109,7 @@ const pluginsData = {
             "/sharedhealth bigdamage - Active le mode dégâts importants"
         ],
         downloadUrl: "plugins/SharedHealth-1.0.0.jar",
-        downloads: 58
+        downloads: 265
     },
     timeaccel: {
         title: "J'ACCELERE LE JEU mais IL NE PEUT PAS LE PROUVER",
@@ -122,7 +122,7 @@ const pluginsData = {
             "/time status - Affiche la vitesse actuelle"
         ],
         downloadUrl: "plugins/NosiaralTime-1.0.0.jar",
-        downloads: 38
+        downloads: 106
     }
 };
 

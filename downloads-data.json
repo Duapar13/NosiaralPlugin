@@ -1,0 +1,12 @@
+{
+  "inventory": {
+    "current": 265,
+    "lastUpdate": "2026-03-31T17:17:57.302Z",
+    "multiplier": 1.6599190517789157
+  },
+  "timeaccel": {
+    "current": 106,
+    "lastUpdate": "2026-03-31T17:17:57.307Z",
+    "multiplier": 1.4080512050939016
+  }
+}
