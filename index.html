@@ -37,6 +37,17 @@
                     <div class="download-count" data-plugin="timeaccel">📥 <span class="count">38</span> téléchargements</div>
                 </div>
             </div>
+
+            <div class="plugin-card" data-plugin="deathswap">
+                <div class="plugin-image">
+                    <img src="images/3.jpg" alt="Death Swap Nosiaral">
+                </div>
+                <div class="plugin-info">
+                    <h3>On Échange de Place toute les 5 Minutes, le Survivant Gagne !</h3>
+                    <p>Échangez de place tous les 5 minutes - le dernier survivant remporte la victoire</p>
+                    <div class="download-count" data-plugin="deathswap">📥 <span class="count">0</span> téléchargements</div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -51,10 +62,15 @@
                 <p id="modalDescription"></p>
                 <div class="download-stats">
                     <p>📥 <span id="modalDownloadCount">0</span> téléchargements</p>
+                    <p id="modalDateAdded" style="color: #888; font-size: 0.9em;"></p>
                 </div>
                 <div class="commands-section">
-                    <h3>Commandes</h3>
+                    <h3>📋 Commandes disponibles</h3>
                     <ul id="modalCommands" class="commands-list"></ul>
+                </div>
+                <div class="details-section" id="detailsSection" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; display: none;">
+                    <h3>📌 Détails</h3>
+                    <div id="modalDetails" class="details-content"></div>
                 </div>
             </div>
             <div class="modal-footer">

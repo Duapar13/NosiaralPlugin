@@ -223,6 +223,41 @@ body {
     color: var(--text-secondary);
 }
 
+.commands-list li code {
+    background-color: rgba(99, 102, 241, 0.15);
+    color: var(--primary-color);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.commands-list li span {
+    color: var(--text-secondary);
+    font-family: inherit;
+}
+
+/* Styles pour la section détails */
+.details-section h3 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.details-content {
+    display: grid;
+    gap: 10px;
+}
+
+.details-content div {
+    background-color: transparent;
+    border-left: 3px solid var(--primary-color);
+    padding: 12px;
+    padding-left: 15px;
+    border-radius: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
 .modal-footer {
     text-align: right;
     padding-top: 20px;

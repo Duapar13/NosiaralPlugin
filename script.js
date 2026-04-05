@@ -103,28 +103,91 @@ const pluginsData = {
         title: "6 GARS en Hardcore avec INVENTAIRE et PV PARTAGÉS",
         description: "Ce plugin synchronise l'inventaire et les points de vie de tous les joueurs du serveur. Tous les joueurs partagent la même barre de vie. Parfait pour les défis coopératifs où tous les joueurs partagent les mêmes ressources et la même santé.",
         commands: [
-            "/sharedhealth ou /sh reload - Recharge le plugin",
-            "/sharedhealth status - Affiche le statut actuel",
-            "/sharedhealth sethealth - Définit la vie partagée entre les joueurs",
-            "/sharedhealth bigdamage - Active le mode dégâts importants"
+            { command: "/sharedhealth reload", description: "Recharge le plugin" },
+            { command: "/sharedhealth status", description: "Affiche le statut actuel" },
+            { command: "/sharedhealth sethealth <cœurs>", description: "Définit la vie partagée entre les joueurs" },
+            { command: "/sharedhealth bigdamage", description: "Active le mode dégâts importants" }
         ],
         downloadUrl: "plugins/SharedHealth-1.0.0.jar",
-        downloads: 265
+        downloads: 265,
+        dateAdded: "2025-08-15",
+        details: [
+            "❤️ <strong>Vie partagée :</strong> Tous les joueurs partagent la même barre de vie",
+            "📦 <strong>Inventaire :</strong> Synchronisation complète entre les joueurs",
+            "⚙️ <strong>Configuration :</strong> Entièrement customisable",
+            "🎮 <strong>Mode :</strong> Parfait pour les défis coopératifs"
+        ]
     },
     timeaccel: {
         title: "J'ACCELERE LE JEU mais IL NE PEUT PAS LE PROUVER",
         description: "Contrôlez la vitesse du temps dans votre monde Minecraft. Accélérez les cycles jour/nuit, les croissances de cultures ou tout simplement pour capter du contenu plus rapidement.",
         commands: [
-            "/time speed <multiplicateur> - Défini la vitesse (ex: 2 pour 2x plus rapide)",
-            "/time normal - Retour à la vitesse normale",
-            "/time pause - Pause le temps",
-            "/time resume - Reprend le temps",
-            "/time status - Affiche la vitesse actuelle"
+            { command: "/time speed <multiplicateur>", description: "Défini la vitesse (ex: 2 pour 2x plus rapide)" },
+            { command: "/time normal", description: "Retour à la vitesse normale" },
+            { command: "/time pause", description: "Pause le temps" },
+            { command: "/time resume", description: "Reprend le temps" },
+            { command: "/time status", description: "Affiche la vitesse actuelle" }
         ],
         downloadUrl: "plugins/NosiaralTime-1.0.0.jar",
-        downloads: 106
+        downloads: 106,
+        dateAdded: "2025-10-22",
+        details: [
+            "⚡ <strong>Vitesse variable :</strong> Accélération de 1x à 16x",
+            "🌅 <strong>Cycles :</strong> Affecte jour/nuit et croissance des cultures",
+            "⏸️ <strong>Pause/Reprendre :</strong> Contrôle complet du temps",
+            "📹 <strong>Contenu :</strong> Parfait pour les vidéos YouTube"
+        ]
+    },
+    deathswap: {
+        title: "On Échange de Place toute les 5 Minutes, le Survivant Gagne !",
+        description: "Un plugin pour les défis Death Swap ! Tous les joueurs échangent de place automatiquement toutes les 5 minutes. Le dernier joueur survivant remporte la victoire. Parfait pour du contenu intense et imprévisible.",
+        commands: [
+            { command: "/deathswap setspawn", description: "Définit le point de spawn (au-dessus de y 100)" },
+            { command: "/deathswap start", description: "Démarre la game" },
+            { command: "/deathswap stop", description: "Arrête la game" }
+        ],
+        downloadUrl: "plugins/DeathSwapNosiaral-1.0.0.jar",
+        downloads: 0,
+        dateAdded: "2026-04-05",
+        details: [
+            "🧭 <strong>Sélection d'équipe :</strong> Les joueurs spawn avec une boussole pour choisir leur équipe",
+            "⏱️ <strong>Intervalle :</strong> Échange de position toutes les 5 minutes",
+            "🎮 <strong>Mécanique :</strong> Choisir l'équipe lance automatiquement la game",
+            "📍 <strong>Spawn :</strong> Position définie au-dessus de y 100 pour sécurité"
+        ]
     }
 };
+
+// Récupérer les plugins triés par date (récents en premier)
+function getSortedPlugins() {
+    return Object.keys(pluginsData).sort((a, b) => {
+        const dateA = new Date(pluginsData[a].dateAdded);
+        const dateB = new Date(pluginsData[b].dateAdded);
+        return dateB - dateA; // Récents en premier
+    });
+}
+
+// Réorganiser les plugins par date dans le DOM
+function reorderPluginsByDate() {
+    const pluginsGrid = document.querySelector('.plugins-grid');
+    if (!pluginsGrid) return;
+    
+    const sortedPluginIds = getSortedPlugins();
+    const pluginCards = {};
+    
+    // Créer une map des cartes par ID
+    document.querySelectorAll('.plugin-card').forEach(card => {
+        const pluginId = card.dataset.plugin;
+        pluginCards[pluginId] = card;
+    });
+    
+    // Réinsérer les cards dans l'ordre trié
+    sortedPluginIds.forEach(pluginId => {
+        if (pluginCards[pluginId]) {
+            pluginsGrid.appendChild(pluginCards[pluginId]);
+        }
+    });
+}
 
 // Afficher les compteurs de téléchargement
 function displayDownloadCounts() {
@@ -156,8 +219,10 @@ function incrementDownloadCount(pluginId) {
 
 // Attendre que le DOM soit chargé avant d'initialiser
 document.addEventListener("DOMContentLoaded", () => {
+    // Réorganiser les plugins par date (récents en premier)
+    reorderPluginsByDate();
+    
     // Afficher les compteurs de téléchargement
-    displayDownloadCounts();
     displayDownloadCounts();
     
     // Éléments du DOM
@@ -209,18 +274,65 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("modalTitle").textContent = plugin.title;
         document.getElementById("modalDescription").textContent = plugin.description;
         
-        // Afficher le compteur de téléchargement
+        // Afficher le compteur de téléchargement et la date
         document.getElementById("modalDownloadCount").textContent = plugin.downloads;
+        const dateAdded = document.getElementById("modalDateAdded");
+        if (plugin.dateAdded) {
+            const date = new Date(plugin.dateAdded);
+            const formattedDate = date.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" });
+            dateAdded.textContent = `📅 Ajouté le ${formattedDate}`;
+        }
         
         // Remplir les commandes
         const commandsList = document.getElementById("modalCommands");
         commandsList.innerHTML = "";
         
-        plugin.commands.forEach(command => {
+        plugin.commands.forEach(commandItem => {
             const li = document.createElement("li");
-            li.textContent = command;
+            li.style.marginBottom = "10px";
+            
+            if (typeof commandItem === "string") {
+                // Ancien format (rétrocompatibilité)
+                li.textContent = commandItem;
+            } else {
+                // Nouveau format avec objets
+                const commandCode = document.createElement("code");
+                commandCode.textContent = commandItem.command;
+                commandCode.style.backgroundColor = "#f5f5f5";
+                commandCode.style.padding = "4px 8px";
+                commandCode.style.borderRadius = "4px";
+                commandCode.style.fontWeight = "bold";
+                
+                const descSpan = document.createElement("span");
+                descSpan.textContent = " — " + commandItem.description;
+                descSpan.style.marginLeft = "8px";
+                descSpan.style.color = "#666";
+                
+                li.appendChild(commandCode);
+                li.appendChild(descSpan);
+            }
             commandsList.appendChild(li);
         });
+        
+        // Afficher la section détails si disponible
+        const detailsSection = document.getElementById("detailsSection");
+        if (plugin.details && plugin.details.length > 0) {
+            detailsSection.style.display = "block";
+            const detailsContent = document.getElementById("modalDetails");
+            detailsContent.innerHTML = "";
+            
+            plugin.details.forEach(detail => {
+                const detailDiv = document.createElement("div");
+                detailDiv.style.marginBottom = "8px";
+                detailDiv.style.padding = "8px";
+                detailDiv.style.borderLeft = "3px solid #007bff";
+                detailDiv.style.paddingLeft = "12px";
+                detailDiv.innerHTML = detail;
+                detailsContent.appendChild(detailDiv);
+            });
+        } else {
+            detailsSection.style.display = "none";
+        }
 
         // Afficher la modal
         modal.style.display = "block";
