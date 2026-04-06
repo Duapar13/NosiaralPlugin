@@ -2,6 +2,48 @@
 const DISCORD_WEBHOOK_VISITOR = "https://discord.com/api/webhooks/1485378078095048775/UJeIBnkcbnevmcDLISAcjR9vQ0XHWnZ--iP5R93V-On9-Wm640ShdzRJlibp_11YiiPD";
 const DISCORD_WEBHOOK_DOWNLOAD = "https://discord.com/api/webhooks/1485378684272775380/bNQXnAvRkk_PcCMnFQaCPr9AwxhKnq0tTWhWMZDCMsarg9XG_IedCkLYQgAGaS_mwQYE";
 
+// Fonction pour afficher la notification de collecte de données
+function showDataCollectionNotice() {
+    // Vérifier si l'utilisateur a déjà accepté la notification
+    const noticeAccepted = localStorage.getItem('dataCollectionNoticeAccepted');
+    
+    if (noticeAccepted) {
+        return; // L'utilisateur a déjà accepté, ne pas afficher
+    }
+    
+    // Afficher la modal de notification
+    const noticeModal = document.getElementById('dataCollectionNotice');
+    if (noticeModal) {
+        noticeModal.style.display = 'block';
+        
+        // Bouton fermer
+        const closeBtn = document.getElementById('closeNoticeBtn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                noticeModal.style.display = 'none';
+                localStorage.setItem('dataCollectionNoticeAccepted', 'true');
+            });
+        }
+        
+        // Bouton J'ai compris
+        const acceptBtn = document.getElementById('acceptNoticeBtn');
+        if (acceptBtn) {
+            acceptBtn.addEventListener('click', () => {
+                noticeModal.style.display = 'none';
+                localStorage.setItem('dataCollectionNoticeAccepted', 'true');
+            });
+        }
+        
+        // Fermer en cliquant en dehors du contenu
+        window.addEventListener('click', (event) => {
+            if (event.target === noticeModal) {
+                noticeModal.style.display = 'none';
+                localStorage.setItem('dataCollectionNoticeAccepted', 'true');
+            }
+        });
+    }
+}
+
 // Fonction pour envoyer un message au webhook Discord
 async function sendDiscordWebhook(data, webhookUrl) {
     try {
@@ -219,6 +261,9 @@ function incrementDownloadCount(pluginId) {
 
 // Attendre que le DOM soit chargé avant d'initialiser
 document.addEventListener("DOMContentLoaded", () => {
+    // Afficher la notification de collecte de données
+    showDataCollectionNotice();
+    
     // Réorganiser les plugins par date (récents en premier)
     reorderPluginsByDate();
     
