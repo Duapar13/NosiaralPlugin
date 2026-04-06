@@ -105,6 +105,73 @@ const pluginsData = {
 
 // Attendre que le DOM soit chargé avant d'initialiser
 document.addEventListener("DOMContentLoaded", () => {
+    // ==================== CAROUSEL INITIALIZATION ====================
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideSpan = document.getElementById('currentSlide');
+    const carouselTrack = document.querySelector('.carousel-track');
+
+    function updateCarousel() {
+        // Mettre à jour la position du carrousel
+        const offset = -currentSlide * 100;
+        carouselTrack.style.transform = `translateX(${offset}%)`;
+        
+        // Mettre à jour les dots
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+        
+        // Mettre à jour le compteur
+        if (currentSlideSpan) {
+            currentSlideSpan.textContent = currentSlide + 1;
+        }
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateCarousel();
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        updateCarousel();
+    }
+
+    function goToSlide(slideIndex) {
+        currentSlide = slideIndex;
+        updateCarousel();
+    }
+
+    // Event listeners pour les boutons
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+
+    // Event listeners pour les dots
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            const slideIndex = parseInt(dot.dataset.slide);
+            goToSlide(slideIndex);
+        });
+    });
+
+    // Clavier - flèches
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Initialiser le carrousel
+    updateCarousel();
+
+    // ========== PLUGIN MODAL ET AUTRES FONCTIONNALITÉS ==========
+    
     // Afficher la notification de collecte de données
     showDataCollectionNotice();
     
