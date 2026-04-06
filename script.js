@@ -1,7 +1,3 @@
-// Webhooks Discord
-const DISCORD_WEBHOOK_VISITOR = "https://discord.com/api/webhooks/1485378078095048775/UJeIBnkcbnevmcDLISAcjR9vQ0XHWnZ--iP5R93V-On9-Wm640ShdzRJlibp_11YiiPD";
-const DISCORD_WEBHOOK_DOWNLOAD = "https://discord.com/api/webhooks/1485378684272775380/bNQXnAvRkk_PcCMnFQaCPr9AwxhKnq0tTWhWMZDCMsarg9XG_IedCkLYQgAGaS_mwQYE";
-
 // Fonction pour afficher la notification de collecte de données
 function showDataCollectionNotice() {
     // Vérifier si l'utilisateur a déjà accepté la notification
@@ -42,101 +38,6 @@ function showDataCollectionNotice() {
             }
         });
     }
-}
-
-// Fonction pour envoyer un message au webhook Discord
-async function sendDiscordWebhook(data, webhookUrl) {
-    try {
-        await fetch(webhookUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-    } catch (error) {
-        console.log("Webhook envoyé");
-    }
-}
-
-// Fonction pour envoyer un webhook à l'arrivée sur le site
-function sendVisitorWebhook() {
-    const now = new Date();
-    const embed = {
-        embeds: [
-            {
-                title: "👤 Nouveau visiteur sur le site",
-                color: 3447003,
-                fields: [
-                    {
-                        name: "🕐 Heure",
-                        value: now.toLocaleString("fr-FR"),
-                        inline: true
-                    },
-                    {
-                        name: "🌍 Navigateur",
-                        value: navigator.userAgent.substring(0, 100),
-                        inline: false
-                    },
-                    {
-                        name: "🗺️ Langue",
-                        value: navigator.language,
-                        inline: true
-                    },
-                    {
-                        name: "📱 Plateforme",
-                        value: navigator.platform,
-                        inline: true
-                    }
-                ],
-                footer: {
-                    text: "Nosiaral Plugins Tracker"
-                },
-                timestamp: now.toISOString()
-            }
-        ]
-    };
-    sendDiscordWebhook(embed, DISCORD_WEBHOOK_VISITOR);
-}
-
-// Fonction pour envoyer un webhook lors du téléchargement
-function sendDownloadWebhook(pluginName, pluginUrl) {
-    const now = new Date();
-    const embed = {
-        embeds: [
-            {
-                title: "⬇️ Téléchargement de Plugin",
-                color: 65280,
-                fields: [
-                    {
-                        name: "📦 Plugin",
-                        value: pluginName,
-                        inline: false
-                    },
-                    {
-                        name: "🕐 Heure",
-                        value: now.toLocaleString("fr-FR"),
-                        inline: true
-                    },
-                    {
-                        name: "🌍 Navigateur",
-                        value: navigator.userAgent.substring(0, 100),
-                        inline: false
-                    },
-                    {
-                        name: "🗺️ Langue",
-                        value: navigator.language,
-                        inline: true
-                    }
-                ],
-                footer: {
-                    text: "Nosiaral Plugins Tracker"
-                },
-                timestamp: now.toISOString()
-            }
-        ]
-    };
-    sendDiscordWebhook(embed, DISCORD_WEBHOOK_DOWNLOAD);
 }
 
 // Données des plugins
@@ -200,75 +101,12 @@ const pluginsData = {
     }
 };
 
-// Récupérer les plugins triés par date (récents en premier)
-function getSortedPlugins() {
-    return Object.keys(pluginsData).sort((a, b) => {
-        const dateA = new Date(pluginsData[a].dateAdded);
-        const dateB = new Date(pluginsData[b].dateAdded);
-        return dateB - dateA; // Récents en premier
-    });
-}
 
-// Réorganiser les plugins par date dans le DOM
-function reorderPluginsByDate() {
-    const pluginsGrid = document.querySelector('.plugins-grid');
-    if (!pluginsGrid) return;
-    
-    const sortedPluginIds = getSortedPlugins();
-    const pluginCards = {};
-    
-    // Créer une map des cartes par ID
-    document.querySelectorAll('.plugin-card').forEach(card => {
-        const pluginId = card.dataset.plugin;
-        pluginCards[pluginId] = card;
-    });
-    
-    // Réinsérer les cards dans l'ordre trié
-    sortedPluginIds.forEach(pluginId => {
-        if (pluginCards[pluginId]) {
-            pluginsGrid.appendChild(pluginCards[pluginId]);
-        }
-    });
-}
-
-// Afficher les compteurs de téléchargement
-function displayDownloadCounts() {
-    Object.keys(pluginsData).forEach(pluginId => {
-        const count = pluginsData[pluginId].downloads;
-        const countElements = document.querySelectorAll(`[data-plugin="${pluginId}"] .count`);
-        countElements.forEach(element => {
-            element.textContent = count;
-        });
-    });
-}
-
-// Incrémenter le compteur de téléchargement
-function incrementDownloadCount(pluginId) {
-    const newCount = ++pluginsData[pluginId].downloads;
-    
-    // Mettre à jour l'affichage sur la card
-    const countElements = document.querySelectorAll(`[data-plugin="${pluginId}"] .count`);
-    countElements.forEach(element => {
-        element.textContent = newCount;
-    });
-    
-    // Mettre à jour l'affichage dans la modal si elle est ouverte
-    const modalDownloadCount = document.getElementById("modalDownloadCount");
-    if (modalDownloadCount) {
-        modalDownloadCount.textContent = newCount;
-    }
-}
 
 // Attendre que le DOM soit chargé avant d'initialiser
 document.addEventListener("DOMContentLoaded", () => {
     // Afficher la notification de collecte de données
     showDataCollectionNotice();
-    
-    // Réorganiser les plugins par date (récents en premier)
-    reorderPluginsByDate();
-    
-    // Afficher les compteurs de téléchargement
-    displayDownloadCounts();
     
     // Éléments du DOM
     const modal = document.getElementById("pluginModal");
@@ -293,12 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         card.addEventListener("click", () => {
             const pluginId = card.dataset.plugin;
             openModal(pluginId);
-            // Envoyer le webhook quand on clique sur la card
-            const plugin = pluginsData[pluginId];
-            if (plugin) {
-                console.log("Plugin cliqué:", plugin.title);
-                sendDownloadWebhook(plugin.title, plugin.downloadUrl);
-            }
         });
     });
 
@@ -318,15 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("modalTitle").textContent = plugin.title;
         document.getElementById("modalDescription").textContent = plugin.description;
-        
-        // Afficher le compteur de téléchargement et la date
-        document.getElementById("modalDownloadCount").textContent = plugin.downloads;
-        const dateAdded = document.getElementById("modalDateAdded");
-        if (plugin.dateAdded) {
-            const date = new Date(plugin.dateAdded);
-            const formattedDate = date.toLocaleDateString("fr-FR", { year: "numeric", month: "long", day: "numeric" });
-            dateAdded.textContent = `📅 Ajouté le ${formattedDate}`;
-        }
         
         // Remplir les commandes
         const commandsList = document.getElementById("modalCommands");
@@ -391,19 +214,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Bouton cliqué! currentPlugin:", currentPlugin);
             if (currentPlugin) {
                 console.log("Téléchargement de:", currentPlugin.title);
-                // Incrémenter le compteur
-                incrementDownloadCount(currentPluginId);
-                // Envoyer le webhook
-                sendDownloadWebhook(currentPlugin.title, currentPlugin.downloadUrl);
-                // Petit délai pour laisser le temps au webhook d'être envoyé
-                setTimeout(() => {
-                    const link = document.createElement("a");
-                    link.href = currentPlugin.downloadUrl;
-                    link.download = currentPlugin.downloadUrl.split("/").pop();
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }, 100);
+                const link = document.createElement("a");
+                link.href = currentPlugin.downloadUrl;
+                link.download = currentPlugin.downloadUrl.split("/").pop();
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         });
     }
@@ -420,8 +236,5 @@ document.addEventListener("DOMContentLoaded", () => {
             closeModal();
         }
     });
-
-    // Envoyer un webhook à l'arrivée sur le site
-    sendVisitorWebhook();
 });
 
